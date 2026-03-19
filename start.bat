@@ -139,7 +139,7 @@ call :section "Installing Dependencies"
 
 if not exist "%BACKEND_DIR%\node_modules" (
   call :log Installing backend dependencies...
-  npm install --prefix "%BACKEND_DIR%" --silent
+  call npm install --prefix "%BACKEND_DIR%" --silent
   if errorlevel 1 ( call :err npm install failed for backend & exit /b 1 )
   call :ok Backend dependencies installed
 ) else (
@@ -148,7 +148,7 @@ if not exist "%BACKEND_DIR%\node_modules" (
 
 if not exist "%FRONTEND_DIR%\node_modules" (
   call :log Installing frontend dependencies...
-  npm install --prefix "%FRONTEND_DIR%" --silent
+  call npm install --prefix "%FRONTEND_DIR%" --silent
   if errorlevel 1 ( call :err npm install failed for frontend & exit /b 1 )
   call :ok Frontend dependencies installed
 ) else (
@@ -220,8 +220,9 @@ call :section "Starting Backend (port 4000)"
 set "BACKEND_LOG=%LOG_DIR%\backend.log"
 call :log Starting backend dev server... (log: .logs\backend.log^)
 
-:: Load backend .env and start in a new window (hidden-ish via minimized)
-start "AgentArena-Backend" /MIN cmd /c "cd /d "%BACKEND_DIR%" && (for /f "tokens=1,* delims==" %%a in (.env) do if not "%%a"=="" if not "%%a:~0,1%"=="#" set "%%a=%%b") && npm run dev > "%BACKEND_LOG%" 2>&1"
+:: Start backend in a new window (already cd'd into BACKEND_DIR from Prisma step)
+cd /d "%BACKEND_DIR%"
+start "AgentArena-Backend" cmd /k "call npm run dev"
 
 :: Grab the PID of the cmd window we just spawned
 :: Use WMIC to find the most recently started node process
@@ -256,7 +257,8 @@ call :section "Starting Frontend (port 5173)"
 set "FRONTEND_LOG=%LOG_DIR%\frontend.log"
 call :log Starting frontend dev server... (log: .logs\frontend.log^)
 
-start "AgentArena-Frontend" /MIN cmd /c "cd /d "%FRONTEND_DIR%" && npm run dev > "%FRONTEND_LOG%" 2>&1"
+cd /d "%FRONTEND_DIR%"
+start "AgentArena-Frontend" cmd /k "call npm run dev"
 
 timeout /t 2 /nobreak >nul
 for /f "tokens=2" %%p in ('tasklist /fi "imagename eq node.exe" /fo list ^| findstr /i "PID"') do (

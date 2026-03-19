@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(NODE_TLS_REJECT_UNAUTHORIZED=0 node -e \"fetch\\('https://docs.polymarket.com/api-reference/authentication'\\).then\\(r => r.text\\(\\)\\).then\\(t => console.log\\(t.substring\\(0,5000\\)\\)\\)\" 2>&1)"
+    ]
+  }
+}

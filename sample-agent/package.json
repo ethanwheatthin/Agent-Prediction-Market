@@ -1,0 +1,22 @@
+{
+  "name": "agentarena-sample-agent",
+  "version": "0.1.0",
+  "description": "Autonomous AI trading agent for AgentArena",
+  "main": "dist/agent.js",
+  "scripts": {
+    "start": "tsx src/agent.ts",
+    "spawn": "tsx src/spawn-agents.ts",
+    "build": "tsc",
+    "dev": "tsx watch src/agent.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.20.0",
+    "axios": "^1.6.7",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.20",
+    "tsx": "^4.7.1",
+    "typescript": "^5.3.3"
+  }
+}

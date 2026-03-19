@@ -1,0 +1,29 @@
+app:
+  name: AgentArena
+  version: 0.1.0
+  description: AI Agent Prediction Market Platform
+
+backend:
+  port: 4000
+  corsOrigins:
+    - http://localhost:5173
+
+markets:
+  syncIntervalMs: 300000
+  cacheExpirySeconds: 60
+  defaultFetchLimit: 50
+  maxMarketsStored: 500
+
+agents:
+  startingWallet: 10000
+  maxSharesPerTrade: 100
+  apiKeyPrefix: "aa_live_"
+
+polymarket:
+  gammaUrl: https://gamma-api.polymarket.com
+  clobUrl: https://clob.polymarket.com
+  rateLimitPerMinute: 30
+
+redis:
+  keyPrefix: "agentarena:"
+  defaultTtlSeconds: 300

@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Agent {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  persona     String?
+  apiKeyHash  String   @unique
+  wallet      Float    @default(10000)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  trades      Trade[]
+  positions   Position[]
+  comments    Comment[]
+  totalPnl    Float    @default(0)
+  winRate     Float    @default(0)
+  tradeCount  Int      @default(0)
+  winCount    Int      @default(0)
+  lossCount   Int      @default(0)
+
+  @@map("agents")
+}
+
+model Market {
+  id               String   @id
+  eventId          String
+  question         String
+  description      String?
+  outcomes         String   // JSON array string
+  outcomePrices    String   // JSON array string (latest synced)
+  volume           Float    @default(0)
+  liquidity        Float    @default(0)
+  clobTokenIds     String   @default("[]") // JSON array string
+  conditionId      String?
+  image            String?
+  icon             String?
+  active           Boolean  @default(true)
+  closed           Boolean  @default(false)
+  resolvedOutcome  String?
+  endDate          DateTime?
+  startDate        DateTime?
+  lastSyncedAt     DateTime @default(now())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  trades           Trade[]
+  positions        Position[]
+  comments         Comment[]
+  sentiments       SentimentSnapshot[]
+
+  @@map("markets")
+}
+
+model Trade {
+  id        String   @id @default(cuid())
+  agentId   String
+  marketId  String
+  side      String   // "BUY" or "SELL"
+  outcome   String   // Which outcome (e.g., "Yes", "No")
+  shares    Float
+  price     Float    // Price at time of trade
+  cost      Float    // Total cost (shares * price)
+  pnl       Float?   // Realized PnL (set when position closed)
+  createdAt DateTime @default(now())
+  agent     Agent    @relation(fields: [agentId], references: [id])
+  market    Market   @relation(fields: [marketId], references: [id])
+
+  @@map("trades")
+}
+
+model Position {
+  id        String @id @default(cuid())
+  agentId   String
+  marketId  String
+  outcome   String
+  shares    Float
+  avgPrice  Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  agent     Agent  @relation(fields: [agentId], references: [id])
+  market    Market @relation(fields: [marketId], references: [id])
+
+  @@unique([agentId, marketId, outcome])
+  @@map("positions")
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  agentId   String
+  marketId  String
+  content   String
+  sentiment String?  // "BULLISH", "BEARISH", "NEUTRAL"
+  createdAt DateTime @default(now())
+  agent     Agent    @relation(fields: [agentId], references: [id])
+  market    Market   @relation(fields: [marketId], references: [id])
+
+  @@map("comments")
+}
+
+model SentimentSnapshot {
+  id         String   @id @default(cuid())
+  marketId   String
+  bullish    Int      @default(0)
+  bearish    Int      @default(0)
+  neutral    Int      @default(0)
+  avgPrice   Float    @default(0)
+  createdAt  DateTime @default(now())
+  market     Market   @relation(fields: [marketId], references: [id])
+
+  @@map("sentiment_snapshots")
+}

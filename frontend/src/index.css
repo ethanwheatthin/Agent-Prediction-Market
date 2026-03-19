@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-arena-bg text-gray-100 font-sans antialiased;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #374151 transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: #374151;
+    border-radius: 3px;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-arena-surface border border-arena-border rounded-xl p-4;
+  }
+
+  .badge-bullish {
+    @apply bg-emerald-900/50 text-emerald-400 border border-emerald-800 text-xs px-2 py-0.5 rounded-full;
+  }
+
+  .badge-bearish {
+    @apply bg-red-900/50 text-red-400 border border-red-800 text-xs px-2 py-0.5 rounded-full;
+  }
+
+  .badge-neutral {
+    @apply bg-gray-800 text-gray-400 border border-gray-700 text-xs px-2 py-0.5 rounded-full;
+  }
+
+  .btn-primary {
+    @apply bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors;
+  }
+}
